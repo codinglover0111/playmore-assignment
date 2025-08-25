@@ -83,21 +83,25 @@ AWS의 warmpool을 사용하여 미리 여러 인스턴스를 대기 시킨다.
 
 미리 정해진 수의 인스턴스를 제작을 한 다음 중지를 시켜 서버 스케일 아웃까지 걸리는 시간을 절반 가까이 줄일수가 있었다.
 
+서버 인스턴스 비용이 1인당/분당 2~3원 미만이여야한다는 조건을 지킬 수 있다.
+
 ### 해결법 1번의 단점
 
-만약 스케일 아웃이 매우 빨라 정해진 수의 인스턴스를 넘어가게 되면 warmpool의 의미 자체가 사라진다.
+만약 스케일 아웃이 매우 빨라 정해진 수의 인스턴스를 넘어가게 되면 warmpool을 했음에도 콜드스타트 시간이 필요하다
 
 ## 해결법 2번
 
-OpenAI,Gemini에서 제공하는 임시토큰 시스템을 사용한다.
+OpenAI,Gemini에서 공식문서로 제공하는 임시토큰 시스템을 사용한다.
 
-OpenAI는 WebRTC를 지원한다. [출처](https://platform.openai.com/docs/guides/realtime)
+이때 임시토큰은 LiveAPI,Realtime에서만 지원하는 것으로 보이며 현재 openai,gemini에서만 가능하다
+
+OpenAI는 WebRTC,WebSocket를 지원한다. [출처](https://platform.openai.com/docs/guides/realtime)
 
 Gemini는 WebSocket만을 지원한다. [출처](https://ai.google.dev/gemini-api/docs/live#implementation-approach)
 
-[Openai 관련 페이지](https://platform.openai.com/docs/guides/realtime#creating-an-ephemeral-token)
+[Openai 임시토큰 관련 페이지](https://platform.openai.com/docs/guides/realtime#creating-an-ephemeral-token)
 
-[Gemini 관련 페이지](https://ai.google.dev/gemini-api/docs/ephemeral-tokens?hl=ko)
+[Gemini 임시토큰 관련 페이지](https://ai.google.dev/gemini-api/docs/ephemeral-tokens?hl=ko)
 
 [![해결법 2번](./2차.png)](./2차.png)
 
@@ -105,13 +109,13 @@ Gemini는 WebSocket만을 지원한다. [출처](https://ai.google.dev/gemini-ap
 
 클라이언트가 대부분의 사양을 감당하며 서버는 단지 임시토큰을 발급만 해주면된다.
 
-100명,1000명이 한번에 접속을 시도해도 서버는 단지 임시토큰을 발급만 해주면 되며 이는 비교적 적은 부하로도 많은 유저를 감당할 수 있다.
+100명,1000명이 한번에 접속을 시도해도 서버는 단지 임시토큰을 발급만 해주면면 되며 이는 1번 방법과 달리 서버가 중계를 하지 않아도 되기에 비해 비교적 적은 부하로도 많은 유저를 감당할 수 있다.
 
 ### 해결법 2번의 단점
 
-1. OpenAI,Gemini의 플랫폼에 종속이 되며 만일 TTS를 따로 써야하는 경우 이 방법은 불가능 해진다.
+OpenAI,Gemini의 플랫폼에 종속이 되며 만일 TTS를 따로 써야하는 경우 따로 유저가 TTS서버에 요청을 해야하는 불편함이 있다.
 
-2. 프롬프트가 유출되기 쉬워진다.
+프롬프트가 유출되기 쉬워진다.
 
 ## 해결법 3번
 
