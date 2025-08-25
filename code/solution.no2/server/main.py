@@ -43,7 +43,7 @@ def get_token():
     try:
         client = genai.Client(
             http_options={
-                "api_version": "v1alpha",
+                "api_version": "v1alpha",  # v1 알파만 임시 토큰을 생성할 수 있음
             }
         )
 
@@ -58,7 +58,7 @@ def get_token():
         )
         return {"status_code": 200, "message": "success", "token": token.name}
     except ValueError:
-        return {"status_code": 200, "message": "error", "token": None}
+        return {"status_code": 200, "message": "error", "token": "error"}
 
 
 if __name__ == "__main__":
