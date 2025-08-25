@@ -2,10 +2,10 @@ from __future__ import annotations
 
 import logging
 import json
+import asyncio
 from dotenv import load_dotenv
 
 from google.genai.types import Modality
-from google.genai.types import AudioTranscriptionConfig
 from livekit.agents import (
     Agent,
     AgentSession,
@@ -14,7 +14,6 @@ from livekit.agents import (
     cli,
 )
 from livekit.plugins import google
-import asyncio
 
 load_dotenv()
 
