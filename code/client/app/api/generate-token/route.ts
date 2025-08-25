@@ -5,6 +5,7 @@ export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
   const room = searchParams.get("room");
   const username = searchParams.get("username");
+  const metadataParam = searchParams.get("metadata");
 
   if (!room || !username) {
     return NextResponse.json(
@@ -23,9 +24,18 @@ export async function GET(req: NextRequest) {
     );
   }
 
+  let metadata = "";
+  if (metadataParam) {
+    try {
+      metadata = metadataParam;
+    } catch (e) {
+      console.error("Failed to parse metadata:", e);
+    }
+  }
+
   const at = new AccessToken(apiKey, apiSecret, {
     identity: username,
-    // ttl: '5m', // session TTL can be configured here
+    metadata: metadata,
   });
 
   at.addGrant({ room, roomJoin: true, canPublish: true, canSubscribe: true });

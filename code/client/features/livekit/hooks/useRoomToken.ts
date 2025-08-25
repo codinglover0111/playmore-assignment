@@ -8,7 +8,11 @@ export function useRoomToken() {
   const [isConnecting, setIsConnecting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const connect = async (params: { room: string; username: string }) => {
+  const connect = async (params: {
+    room: string;
+    username: string;
+    metadata?: { language?: string };
+  }) => {
     try {
       setIsConnecting(true);
       setError(null);

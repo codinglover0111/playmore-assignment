@@ -7,7 +7,7 @@ import {
   useLocalParticipant,
 } from "@livekit/components-react";
 import { Room } from "livekit-client";
-import { useEffect, useMemo, useCallback } from "react";
+import { useEffect, useMemo, useCallback, useState } from "react";
 import MicrophoneVisual from "./MicrophoneVisual";
 import Transcripts from "./Transcripts";
 import "@livekit/components-styles";
@@ -18,6 +18,7 @@ export default function LiveKit({
   token: string;
   onDisconnect: () => void;
 }) {
+  const [isConnected, setIsConnected] = useState("connecting");
   const room = useMemo(() => new Room(), []);
   const serverUrl = process.env.NEXT_PUBLIC_LIVEKIT_SERVER_URL || "";
 
@@ -40,8 +41,10 @@ export default function LiveKit({
         await room.localParticipant.setMicrophoneEnabled(true, undefined, {
           preConnectBuffer: true,
         });
+        setIsConnected("connected");
       } catch (error) {
         console.error("Error connecting to agent:", error);
+        setIsConnected("connect error");
       }
     };
 
@@ -50,6 +53,9 @@ export default function LiveKit({
 
   return (
     <RoomContext.Provider value={room}>
+      <>
+        <h1>{isConnected}</h1>
+      </>
       <RoomAudioRenderer />
       <div className="w-full h-40">
         <MicrophoneVisual />
@@ -60,6 +66,7 @@ export default function LiveKit({
       <button onClick={handleToggleMicrophone}>
         {isMicrophoneEnabled ? "Mute mic" : "Unmute mic"}
       </button>
+
       <button
         onClick={async () => {
           await room.disconnect();
